@@ -1,23 +1,38 @@
-import logo from './logo.svg';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Navigation from '../src/components/Navigation';
+import Hero from '../src/components/Hero';
+import MealCard from '../src/components/MealCard';
+
+import React, { useEffect, useState } from 'react';
 
 function App() {
+  const [categories, setCategories] = useState([]);
+
+  function getCategories() {
+    const apiUrl = 'https://www.themealdb.com/api/json/v1/1/categories.php';
+
+    fetch(apiUrl)
+      .then((res) => res.json())
+      .then((data) => {
+        setCategories(data.categories);
+      });
+  }
+  useEffect(() => {
+    getCategories();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Navigation />
+      <Hero />
+      {categories.map((cat) => (
+        <MealCard
+          category={cat.strCategory}
+          image={cat.strCategoryThumb}
+          description={cat.strCategoryDescription}
+        />
+      ))}
     </div>
   );
 }
